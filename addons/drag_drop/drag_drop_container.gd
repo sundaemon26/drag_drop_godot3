@@ -20,7 +20,7 @@
 
 extends MarginContainer
 
-class_name DragDropContainer
+class_name DragDropContainer, "DragDropContainer.svg"
 
 
 signal item_selected()
@@ -106,6 +106,7 @@ func _input(event: InputEvent):
 
 
 func _ready():
+	self.connect("gui_input", self, "_on_gui_input")
 	self.add_to_group(DRAG_DROP_CONTAINER_GROUP)
 	_target_position = self.rect_global_position
 

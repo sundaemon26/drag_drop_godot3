@@ -4,5 +4,3 @@
 
 [node name="DragDropContainer" type="MarginContainer"]
 script = ExtResource( 1 )
-
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
