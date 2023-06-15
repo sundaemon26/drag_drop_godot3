@@ -18,7 +18,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-extends MarginContainer
+extends Container
 
 class_name DragDropContainer, "DragDropContainer.svg"
 
@@ -35,11 +35,10 @@ export(float, 0, 1) var drag_weight = 0.3
 export(Vector2) var selected_offset
 export(bool) var apply_pivot_offset = true
 export(bool) var disabled
-export(bool) var swappeable
+export(bool) var swappeable = true
 export(int, FLAGS, "0", "1", "2", "3", "4", "5", "6", "7") var mask = 1
 
 var _selected: bool setget, is_selected
-var _swapping: bool
 var _target_position: Vector2
 
 
@@ -50,7 +49,6 @@ static func _reset_child_position_on_swap(child: Control, pos: Vector2):
 func _swap_children(container: DragDropContainer):
 	var container_children := container.get_children()
 	var position: Vector2
-	_swapping = true
 	
 	for child in self.get_children():
 		if not child is Control:
@@ -111,13 +109,6 @@ func _ready():
 	_target_position = self.rect_global_position
 
 
-func _sort_children():
-	if not _swapping:
-		._sort_children()
-	else:
-		_swapping = false
-
-
 func _process(_delta):
 	for child in self.get_children():
 		if not child is Control:
@@ -127,9 +118,6 @@ func _process(_delta):
 		if _selected:
 			if apply_pivot_offset:
 				final_position -= child.rect_pivot_offset
-		else:
-			final_position.x += self.get_constant("margin_left")
-			final_position.y += self.get_constant("margin_top")
 		
 		child.rect_global_position = lerp(child.rect_global_position, final_position, drag_weight)
 

@@ -2,5 +2,5 @@
 
 [ext_resource path="res://addons/drag_drop/drag_drop_container.gd" type="Script" id=1]
 
-[node name="DragDropContainer" type="MarginContainer"]
+[node name="DragDropContainer" type="Container"]
 script = ExtResource( 1 )
