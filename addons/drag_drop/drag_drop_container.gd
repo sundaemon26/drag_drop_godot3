@@ -32,7 +32,8 @@ const DRAG_DROP_CONTAINER_GROUP := "_drag_drop_containers"
 
 
 export(float, 0, 1) var drag_weight = 0.3
-export(Vector2) var selected_offset
+export(Vector2) var selected_offset setget set_selected_offset, get_selected_offset
+export(Vector2) var deselected_offset setget set_deselected_offset, get_deselected_offset
 export(bool) var apply_pivot_offset = true
 export(bool) var disabled
 export(bool) var swappeable = true
@@ -108,10 +109,15 @@ func _handle_swap():
 				break
 
 
+func _init_target_position():
+	if not _selected:
+		_target_position = self.rect_global_position + deselected_offset
+
+
 func _input(event: InputEvent):
 	if event is InputEventMouseButton and not event.pressed and _selected:
 		_selected = false
-		_target_position = self.rect_global_position
+		_target_position = self.rect_global_position + deselected_offset
 		self.emit_signal("item_deselected")
 		_handle_swap()
 	elif event is InputEventMouseMotion and _selected:
@@ -120,8 +126,9 @@ func _input(event: InputEvent):
 
 func _ready():
 	self.connect("gui_input", self, "_on_gui_input")
+	self.connect("item_rect_changed", self, "_on_item_rect_change")
 	self.add_to_group(DRAG_DROP_CONTAINER_GROUP)
-	_target_position = self.rect_global_position
+	self.call_deferred("_init_target_position")
 
 
 func _process(_delta):
@@ -146,5 +153,30 @@ func _on_gui_input(event: InputEvent):
 		self.emit_signal("item_selected")
 
 
+func _on_item_rect_change():
+	if not _selected:
+		_target_position = self.rect_global_position
+
+
 func is_selected() -> bool:
 	return _selected
+
+
+func set_selected_offset(offset: Vector2):
+	if _selected:
+		_target_position += offset - selected_offset
+	selected_offset = offset
+
+
+func get_selected_offset() -> Vector2:
+	return selected_offset
+
+
+func set_deselected_offset(offset: Vector2):
+	if not _selected:
+		_target_position += offset - deselected_offset
+	deselected_offset = offset
+
+
+func get_deselected_offset() -> Vector2:
+	return deselected_offset
