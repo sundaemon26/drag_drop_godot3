@@ -101,7 +101,7 @@ func _get_overlapping_area(container: DragDropContainer) -> float:
 
 
 func _handle_swap():
-	var largets_area: float
+	var largest_area: float
 	var best_candidate: DragDropContainer
 	
 	if not swappeable or disabled:
@@ -112,8 +112,8 @@ func _handle_swap():
 		
 		if container.swappeable and not container.disabled:
 			var area = _get_overlapping_area(container)
-			if area > 0 and area > largets_area:
-				largets_area = area
+			if area > 0 and area > largest_area:
+				largest_area = area
 				best_candidate = container
 	
 	if best_candidate:
