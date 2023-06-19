@@ -47,24 +47,39 @@ static func _reset_child_position_on_swap(child: Control, pos: Vector2):
 
 
 func _swap_children(container: DragDropContainer):
+	var children = self.get_children()
 	var container_children := container.get_children()
-	var position: Vector2
+	var positions: PoolVector2Array
+	var container_positions: PoolVector2Array
 	
-	for child in self.get_children():
+	for child in children:
 		if not child is Control:
 			continue
-		position = child.rect_global_position
+		positions.push_back(child.rect_global_position)
 		self.remove_child(child)
-		container.add_child(child)
-		child.rect_global_position = position
 	
 	for child in container_children:
 		if not child is Control:
 			continue
-		position = child.rect_global_position
+		container_positions.push_back(child.rect_global_position)
 		container.remove_child(child)
+	
+	var count: int
+	
+	count = 0
+	for child in children:
+		if not child is Control:
+			continue
+		container.add_child(child)
+		child.rect_global_position = positions[count]
+		count += 1
+	
+	count = 0
+	for child in container_children:
+		if not child is Control:
+			continue
 		self.add_child(child)
-		child.rect_global_position = position
+		child.rect_global_position = container_positions[count]
 	
 	self.emit_signal("item_swapped", container)
 	container.emit_signal("item_swapped", self)
