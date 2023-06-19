@@ -86,18 +86,23 @@ func _swap_children(container: DragDropContainer):
 	container.emit_signal("item_swapped", self)
 
 
-func _try_swap(container: DragDropContainer) -> bool:
+func _get_overlapping_area(container: DragDropContainer) -> float:
 	assert(self != container)
+	
 	for child in self.get_children():
 		if not child is Control:
 			continue
-		if container.get_global_rect().intersects(child.get_global_rect()):
-			_swap_children(container)
-			return true
-	return false
+		var child_rect = child.get_global_rect()
+		if container.get_global_rect().intersects(child_rect):
+			return container.get_global_rect().clip(child_rect).get_area()
+	
+	return 0.0
 
 
 func _handle_swap():
+	var largets_area: float
+	var best_candidate: DragDropContainer
+	
 	if not swappeable or disabled:
 		return
 	for container in get_tree().get_nodes_in_group(DRAG_DROP_CONTAINER_GROUP):
@@ -105,8 +110,13 @@ func _handle_swap():
 			continue
 		
 		if container.swappeable and not container.disabled:
-			if _try_swap(container):
-				break
+			var area = _get_overlapping_area(container)
+			if area > 0 and area > largets_area:
+				largets_area = area
+				best_candidate = container
+	
+	if best_candidate:
+		_swap_children(best_candidate)
 
 
 func _init_target_position():
