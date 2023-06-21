@@ -34,7 +34,7 @@ const DRAG_DROP_CONTAINER_GROUP := "_drag_drop_containers"
 export(float, 0, 1) var drag_weight = 0.3
 export(Vector2) var selected_offset setget set_selected_offset, get_selected_offset
 export(Vector2) var deselected_offset setget set_deselected_offset, get_deselected_offset
-export(float) var deselected_threshold
+export(float) var move_threshold
 export(bool) var apply_pivot_offset = true
 export(bool) var disabled
 export(bool) var swappeable = true
@@ -152,7 +152,7 @@ func _process(_delta):
 			if apply_pivot_offset:
 				final_position -= child.rect_pivot_offset
 		
-		if child.rect_global_position.distance_to(final_position) < deselected_threshold:
+		if child.rect_global_position.distance_to(final_position) < move_threshold:
 			child.rect_global_position = final_position
 		else:
 			child.rect_global_position = lerp(child.rect_global_position, final_position, drag_weight)
