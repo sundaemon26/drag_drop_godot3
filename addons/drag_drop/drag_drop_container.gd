@@ -162,6 +162,14 @@ func _on_gui_input(event: InputEvent):
 	if event is InputEventMouseButton and event.pressed and not _selected:
 		if disabled:
 			return
+		var has_selectable_children := false
+		for child in self.get_children():
+			if child is Control:
+				has_selectable_children = true
+				break
+		if not has_selectable_children:
+			return
+		
 		_selected = true
 		_target_position = get_viewport().get_mouse_position() + selected_offset
 		self.emit_signal("item_selected")
