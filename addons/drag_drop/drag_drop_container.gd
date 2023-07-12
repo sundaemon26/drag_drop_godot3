@@ -20,7 +20,7 @@
 
 extends Container
 
-class_name DragDropContainer, "DragDropContainer.svg"
+class_name DragDropContainer, "drag_drop_container.svg"
 
 
 signal item_selected()
@@ -31,7 +31,7 @@ signal item_swapped(container)
 const DRAG_DROP_CONTAINER_GROUP := "_drag_drop_containers"
 
 
-export(float, 0, 1) var drag_weight = 0.3
+export(float, 0, 1) var drag_weight = 0.5
 export(Vector2) var selected_offset setget set_selected_offset, get_selected_offset
 export(Vector2) var deselected_offset setget set_deselected_offset, get_deselected_offset
 export(float) var move_threshold
